@@ -19,6 +19,11 @@ function setCell(cell){
   if (gameOver) return;
   if (board[cell] !== " ") return;
   board[cell] = player;
+  if(player === "X"){
+    $('.'+cell).css("background-color", "lightblue");
+  }else{
+    $('.'+cell).css("background-color", "lightgreen");
+  }
   checkState();
   renderBoard();
   if (gameOver) return;
@@ -51,9 +56,13 @@ function checkState(){
     && board[winConditions[index][0]] != " "){
       gameOver = true;
       $('.playerText').text('Player ' + player + ' wins');
-      $('.'+winConditions[index][0]).css("background-color", "orange");
-      $('.'+winConditions[index][1]).css("background-color", "orange");
-      $('.'+winConditions[index][2]).css("background-color", "orange");
+      $('.board').hide();
+      $('#giffy').show(500);
+
+      $(".playerText").animate({
+        fontSize: '3.5em'},
+        "slow"
+      );
       return;
    }
   });
@@ -67,6 +76,8 @@ function checkState(){
 
 
 function init(){
+  $("#giffy").hide();
+  $(".board").show();
   board = [" "," "," "," "," "," "," "," "," "];
   player ="X";
   gameOver = false;
