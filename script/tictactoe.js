@@ -20,9 +20,9 @@ function setCell(cell){
   if (board[cell] !== " ") return;
   board[cell] = player;
   checkState();
+  renderBoard();
   if (gameOver) return;
   changePlayer();
-  renderBoard();
   renderText();
 }
 
@@ -33,6 +33,17 @@ function changePlayer(){
     player = "O";
 }
 
+
+
+function full(cur_board){
+  for(var i = 0; i < cur_board.length; i++){
+    if(cur_board[i] === " "){
+      return false;
+    }
+  }
+  return true;
+}
+
 function checkState(){
   $.each(winConditions, function(index,value){
    if (board[winConditions[index][0]] == board[winConditions[index][1]] 
@@ -40,13 +51,20 @@ function checkState(){
     && board[winConditions[index][0]] != " "){
       gameOver = true;
       $('.playerText').text('Player ' + player + ' wins');
-      renderBoard();
       $('.'+winConditions[index][0]).css("background-color", "orange");
       $('.'+winConditions[index][1]).css("background-color", "orange");
       $('.'+winConditions[index][2]).css("background-color", "orange");
+      return;
    }
   });
+  if(!gameOver && full(board)){
+    gameOver = true;
+    $('.playerText').text('Tie');
+    renderBoard();
+  }
 }
+
+
 
 function init(){
   board = [" "," "," "," "," "," "," "," "," "];
@@ -72,6 +90,9 @@ function addListeners(){
         $(this).text(" ");
       }
   });
+  $('.cell').click(function() {
+     setCell(parseInt($(this).attr("id")));
+  })
 }
 
 $(document).ready(function(){
