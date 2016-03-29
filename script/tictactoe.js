@@ -29,6 +29,7 @@ function setCell(cell){
   if (gameOver) return;
   changePlayer();
   renderText();
+  if (player === "O") setCell(aiMove());
 }
 
 function changePlayer(){
@@ -55,12 +56,19 @@ function checkState(){
     && board[winConditions[index][0]] == board[winConditions[index][2]] 
     && board[winConditions[index][0]] != " "){
       gameOver = true;
-      $('.playerText').text('Player ' + player + ' wins');
-      $('.board').hide();
-      $('#giffy').show(500);
+      $('.board').fadeOut(1500);
+      if(player === "X"){
+        $('.playerText').text('You won!');
+        $('.playerText').show();
+        $('#giffy').show(1500);
+      }else{
+        $('.playerText').text('You lose!');
+        $('.playerText').show();
+        $('#aigiffy').show(1500);
+      }
 
       $(".playerText").animate({
-        fontSize: '3.5em'},
+        fontSize: '4.5em'},
         "slow"
       );
       return;
@@ -69,14 +77,50 @@ function checkState(){
   if(!gameOver && full(board)){
     gameOver = true;
     $('.playerText').text('Tie');
+    $('.playerText').show();
+    $(".playerText").animate({
+        fontSize: '4.5em'},
+        "slow"
+    );
     renderBoard();
   }
 }
 
+function aiMove(){
+    if (board[0] == " " && ((board[2] == "X" && board[1] == "X") || (board[8] == "X" && board[4] == "X") || (board[6] == "X" && board[3] == "X"))) 
+        return 0;
+    else if (board[1] == " " && ((board[0] == "X" && board[2] == "X") || (board[7] == "X" && board[4] == "X")))
+        return 1;
+    else if (board[2] == " " && ((board[0] == "X" && board[1] == "X") || (board[6] == "X" && board[4] == "X") || (board[8] == "X" && board[5] == "X")))
+        return 2;
+    else if (board[8] == " " && ((board[6] == "X" && board[7] == "X") || (board[0] == "X" && board[4] == "X") || (board[2] == "X" && board[5] == "X")))
+        return 8;
+    else if (board[6] == " " && ((board[8] == "X" && board[7] == "X") || (board[2] == "X" && board[4] == "X") || (board[0] == "X" && board[3] == "X")))
+        return 6;
+    else if (board[7] == " " && ((board[8] == "X" && board[6] == "X") || (board[1] == "X" && board[4] == "X")))
+        return 7;
+    else if (board[3] == " " && ((board[5] == "X" && board[4] == "X") || (board[0] == "X" && board[6] == "X")))
+        return 3;
+    else if (board[5] == " " && ((board[2] == "X" && board[8] == "X") || (board[4] == "X" && board[3] == "X")))
+        return 5;
+    else if (board[4] == " " && ((board[2] == "X" && board[6] == "X") || (board[8] == "X" && board[0] == "X") || (board[5] == "X" && board[3] == "X") || (board[7] == "X" && board[1] == "X")))
+        return 4;
+    else if (board[4] == " ")
+        return 4;
+    else if (board[0] == " ")
+        return 0;
+    else if (board[8] == " ")
+        return 8;
+    else  if (board[7] == " ")
+        return 7;
+    else if (board[3] == " ")
+        return 3;
 
+}
 
 function init(){
   $("#giffy").hide();
+  $("#aigiffy").hide();
   $(".board").show();
   board = [" "," "," "," "," "," "," "," "," "];
   player ="X";
@@ -84,6 +128,8 @@ function init(){
   renderBoard();
   renderText();
   $('.cell').css('background-color', 'white');
+  $(".playerText").hide();
+  $(".playerText").css("font-size", "1em")
 }
 
 function addListeners(){
